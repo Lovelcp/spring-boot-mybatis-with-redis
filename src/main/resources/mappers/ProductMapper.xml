@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wooyoo.learning.dao.mapper.ProductMapper">
+
+    <!-- 开启基于redis的二级缓存 -->
+    <cache type="com.wooyoo.learning.util.RedisCache"/>
+
+    <select id="select" resultType="Product">
+        SELECT * FROM products WHERE id = #{id} LIMIT 1
+    </select>
+
+    <update id="update" parameterType="Product" flushCache="true">
+        UPDATE products SET name = #{name}, price = #{price} WHERE id = #{id} LIMIT 1
+    </update>
+</mapper>
