@@ -77,8 +77,7 @@ public class RedisCache implements Cache {
     }
 
     /**
-     * 我们不执行clear操作，避免执行危险的flush命令
-     * 我们通过设置value的过期时间来保证cache的容量不会无限增长
+     * Clears this cache instance
      */
     @Override
     public void clear() {
