@@ -33,7 +33,12 @@ server:
 
 # mybatis配置
 mybatis:
-  config-location: classpath:mybatis-config.xml
+  # 配置映射类所在包名
+  type-aliases-package: com.wooyoo.learning.dao.domain
+  # 配置mapper xml文件所在路径，这里是一个数组
+  mapper-locations:
+    - mappers/ProductMapper.xml
+
 
 logging:
   level:
