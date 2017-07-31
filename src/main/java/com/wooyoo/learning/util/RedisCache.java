@@ -41,10 +41,15 @@ public class RedisCache implements Cache {
     @Override
     @SuppressWarnings("unchecked")
     public void putObject(Object key, Object value) {
-        RedisTemplate redisTemplate = getRedisTemplate();
-        ValueOperations opsForValue = redisTemplate.opsForValue();
-        opsForValue.set(key, value, EXPIRE_TIME_IN_MINUTES, TimeUnit.MINUTES);
-        logger.debug("Put query result to redis");
+        try {
+            RedisTemplate redisTemplate = getRedisTemplate();
+            ValueOperations opsForValue = redisTemplate.opsForValue();
+            opsForValue.set(key, value, EXPIRE_TIME_IN_MINUTES, TimeUnit.MINUTES);
+            logger.debug("Put query result to redis");
+        }
+        catch (Throwable t) {
+            logger.error("Redis put failed", t);
+        }
     }
 
     /**
@@ -55,10 +60,16 @@ public class RedisCache implements Cache {
      */
     @Override
     public Object getObject(Object key) {
-        RedisTemplate redisTemplate = getRedisTemplate();
-        ValueOperations opsForValue = redisTemplate.opsForValue();
-        logger.debug("Get cached query result from redis");
-        return opsForValue.get(key);
+        try {
+            RedisTemplate redisTemplate = getRedisTemplate();
+            ValueOperations opsForValue = redisTemplate.opsForValue();
+            logger.debug("Get cached query result from redis");
+            return opsForValue.get(key);
+        }
+        catch (Throwable t) {
+            logger.error("Redis get failed, fail over to db", t);
+            return null;
+        }
     }
 
     /**
@@ -70,9 +81,14 @@ public class RedisCache implements Cache {
     @Override
     @SuppressWarnings("unchecked")
     public Object removeObject(Object key) {
-        RedisTemplate redisTemplate = getRedisTemplate();
-        redisTemplate.delete(key);
-        logger.debug("Remove cached query result from redis");
+        try {
+            RedisTemplate redisTemplate = getRedisTemplate();
+            redisTemplate.delete(key);
+            logger.debug("Remove cached query result from redis");
+        }
+        catch (Throwable t) {
+            logger.error("Redis remove failed", t);
+        }
         return null;
     }
 
